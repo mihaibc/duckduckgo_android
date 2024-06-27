@@ -657,7 +657,7 @@
 
     <!-- MacOs Settings -->
     <string name="macos_settings_description">Полная конфиденциальность в Интернете, благодаря нашему приложению для Mac</string>
-    <string name="macos_settings_title">Приложение DuckDuckGo для Mac</string>
+    <string name="macos_settings_title">Браузер DuckDuckGo для Mac</string>
 
     <!-- Downloads -->
     <string name="downloadsMenuItem">Загрузки</string>
@@ -719,7 +719,7 @@
     <string name="downloadsNotifyMeSubtitle">Получайте уведомления по окончании загрузок.</string>
 
     <!-- Windows Settings -->
-    <string name="windows_settings_title">Приложение DuckDuckGo для Windows</string>
+    <string name="windows_settings_title">Браузер DuckDuckGo для Windows</string>
     <string name="windows_settings_description">Полная конфиденциальность в Интернете, благодаря нашему приложению для Windows</string>
     <string name="windows_settings_description_ready">Готово к загрузке</string>
     <string name="windows_settings_description_list">Теперь вы в списке!</string>
@@ -844,7 +844,7 @@
         <item quantity="many"><![CDATA[ и еще <b>%1$d сервисов</b> пытались вести за вами слежку, но мы их заблокировали.<br/><br/>☝️ Нажмите на щит, чтобы узнать подробности.]]></item>
         <item quantity="other"><![CDATA[ и <b>другие сервисы (еще %1$d)</b> пытались вести за вами слежку, но мы их заблокировали.<br/><br/>☝️ Нажмите на щит, чтобы узнать подробности.]]></item>
     </plurals>
-    <plurals name="onboardingTrackersBlockedZeroDialogDescription" tools:ignore="ImpliedQuantity">
+    <plurals name="onboardingTrackersBlockedZeroDialogDescription">
         <item quantity="one"><![CDATA[ пытался вести за вами слежку, но мы его заблокировали.<br/><br/>☝️ Нажмите на щит, чтобы узнать подробности.]]></item>
         <item quantity="few"><![CDATA[ пытались вести за вами слежку, но мы их заблокировали.<br/><br/>☝️ Нажмите на щит, чтобы узнать подробности.]]></item>
         <item quantity="many"><![CDATA[ пытались вести за вами слежку, но мы их заблокировали.<br/><br/>☝️ Нажмите на щит, чтобы узнать подробности.]]></item>

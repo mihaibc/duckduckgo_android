@@ -657,7 +657,7 @@
 
     <!-- MacOs Settings -->
     <string name="macos_settings_description">Pretražujte privatno s našom aplikacijom za Mac</string>
-    <string name="macos_settings_title">Aplikacija DuckDuckGo za Mac</string>
+    <string name="macos_settings_title">DuckDuckGo preglednik za Mac</string>
 
     <!-- Downloads -->
     <string name="downloadsMenuItem">Preuzimanja</string>
@@ -719,7 +719,7 @@
     <string name="downloadsNotifyMeSubtitle">Primi obavijest kad se preuzimanja završe.</string>
 
     <!-- Windows Settings -->
-    <string name="windows_settings_title">Aplikacija DuckDuckGo za Windows</string>
+    <string name="windows_settings_title">DuckDuckGo preglednik za Windows</string>
     <string name="windows_settings_description">Privatno pregledavanje s našom aplikacijom za Windows</string>
     <string name="windows_settings_description_ready">Preuzimanje je dostupno</string>
     <string name="windows_settings_description_list">Na popisu si!</string>
@@ -844,7 +844,7 @@
         <item quantity="many"><![CDATA[ I <b>još %1$d drugih</b> pokušavalo te ovdje pratiti. Blokirani su!<br/><br/>☝️ Dodirni štit za više informacija.️]]></item>
         <item quantity="other"><![CDATA[ I <b>još %1$d drugih</b> pokušavalo te ovdje pratiti. Blokirani su!<br/><br/>☝️ Dodirni štit za više informacija.️]]></item>
     </plurals>
-    <plurals name="onboardingTrackersBlockedZeroDialogDescription" tools:ignore="ImpliedQuantity">
+    <plurals name="onboardingTrackersBlockedZeroDialogDescription">
         <item quantity="one"><![CDATA[ pokušavali su te ovdje pratiti. Blokirani su!<br/><br/>☝️ Dodirni štit za više informacija.️]]></item>
         <item quantity="few"><![CDATA[ pokušavali su te ovdje pratiti. Blokirani su!<br/><br/>☝️ Dodirni štit za više informacija.️]]></item>
         <item quantity="many"><![CDATA[ pokušavali su te ovdje pratiti. Blokirani su!<br/><br/>☝️ Dodirni štit za više informacija.️]]></item>

@@ -653,7 +653,7 @@
 
     <!-- MacOs Settings -->
     <string name="macos_settings_description">Browse privé met onze app voor Mac</string>
-    <string name="macos_settings_title">DuckDuckGo-app voor Mac</string>
+    <string name="macos_settings_title">DuckDuckGo-browser voor Mac</string>
 
     <!-- Downloads -->
     <string name="downloadsMenuItem">Downloads</string>
@@ -715,7 +715,7 @@
     <string name="downloadsNotifyMeSubtitle">Ontvang een melding wanneer downloads zijn voltooid.</string>
 
     <!-- Windows Settings -->
-    <string name="windows_settings_title">DuckDuckGo-app voor Windows</string>
+    <string name="windows_settings_title">DuckDuckGo-browser voor Windows</string>
     <string name="windows_settings_description">Browse privé met onze app voor Windows</string>
     <string name="windows_settings_description_ready">Download beschikbaar</string>
     <string name="windows_settings_description_list">Je staat op de lijst!</string>

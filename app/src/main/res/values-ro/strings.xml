@@ -655,7 +655,7 @@
 
     <!-- MacOs Settings -->
     <string name="macos_settings_description">Răsfoiește în mod privat, cu aplicația noastră pentru Mac</string>
-    <string name="macos_settings_title">Aplicația DuckDuckGo pentru Mac</string>
+    <string name="macos_settings_title">Browserul DuckDuckGo pentru Mac</string>
 
     <!-- Downloads -->
     <string name="downloadsMenuItem">Descărcări</string>
@@ -717,7 +717,7 @@
     <string name="downloadsNotifyMeSubtitle">Primește o notificare când s-au finalizat descărcările.</string>
 
     <!-- Windows Settings -->
-    <string name="windows_settings_title">Aplicația DuckDuckGo pentru Windows</string>
+    <string name="windows_settings_title">Browserul DuckDuckGo pentru Windows</string>
     <string name="windows_settings_description">Navighează în mod privat cu aplicația noastră pentru Windows</string>
     <string name="windows_settings_description_ready">Descărcare disponibilă</string>
     <string name="windows_settings_description_list">Ești pe listă!</string>

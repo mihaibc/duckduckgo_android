@@ -653,7 +653,7 @@
 
     <!-- MacOs Settings -->
     <string name="macos_settings_description">Surfa privat med vår app för Mac</string>
-    <string name="macos_settings_title">DuckDuckGo-app för Mac</string>
+    <string name="macos_settings_title">DuckDuckGo webbläsare för Mac</string>
 
     <!-- Downloads -->
     <string name="downloadsMenuItem">Nerladdningar</string>
@@ -715,7 +715,7 @@
     <string name="downloadsNotifyMeSubtitle">Få ett meddelande när nerladdningar är klara.</string>
 
     <!-- Windows Settings -->
-    <string name="windows_settings_title">DuckDuckGo-app för Windows</string>
+    <string name="windows_settings_title">DuckDuckGo webbläsare för Windows</string>
     <string name="windows_settings_description">Surfa privat med vår app för Windows</string>
     <string name="windows_settings_description_ready">Nedladdning tillgänglig</string>
     <string name="windows_settings_description_list">Du står på listan!</string>

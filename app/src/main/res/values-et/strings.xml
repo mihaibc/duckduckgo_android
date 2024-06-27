@@ -653,7 +653,7 @@
 
     <!-- MacOs Settings -->
     <string name="macos_settings_description">Sirvi privaatselt meie Maci rakendusega</string>
-    <string name="macos_settings_title">DuckDuckGo Maci rakendus</string>
+    <string name="macos_settings_title">DuckDuckGo Maci brauser</string>
 
     <!-- Downloads -->
     <string name="downloadsMenuItem">Allalaadimised</string>
@@ -715,7 +715,7 @@
     <string name="downloadsNotifyMeSubtitle">Kui allalaadimine on lõpule jõudnud, saad teavituse.</string>
 
     <!-- Windows Settings -->
-    <string name="windows_settings_title">DuckDuckGo Windowsi rakendus</string>
+    <string name="windows_settings_title">DuckDuckGo Windowsi brauser</string>
     <string name="windows_settings_description">Sirvi privaatselt meie Windowsi rakendusega</string>
     <string name="windows_settings_description_ready">Saadaval on allalaadimine</string>
     <string name="windows_settings_description_list">Oled nimekirjas!</string>

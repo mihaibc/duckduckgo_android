@@ -657,7 +657,7 @@
 
     <!-- MacOs Settings -->
     <string name="macos_settings_description">Prezerajte súkromne stránky s našou aplikáciou pre Mac</string>
-    <string name="macos_settings_title">Aplikácia DuckDuckGo pre Mac</string>
+    <string name="macos_settings_title">Prehliadač DuckDuckGo pre Mac</string>
 
     <!-- Downloads -->
     <string name="downloadsMenuItem">Stiahnuté</string>
@@ -719,7 +719,7 @@
     <string name="downloadsNotifyMeSubtitle">Dostávajte upozornenia po dokončení sťahovania.</string>
 
     <!-- Windows Settings -->
-    <string name="windows_settings_title">Aplikácia DuckDuckGo pre Windows</string>
+    <string name="windows_settings_title">Prehliadač DuckDuckGo pre Windows</string>
     <string name="windows_settings_description">Prehliadajte súkromne s našou aplikáciou pre Windows</string>
     <string name="windows_settings_description_ready">K dispozícii na stiahnutie</string>
     <string name="windows_settings_description_list">Ste na zozname!</string>

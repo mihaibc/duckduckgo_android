@@ -653,7 +653,7 @@
 
     <!-- MacOs Settings -->
     <string name="macos_settings_description">Naviguez incognito avec notre application pour Mac</string>
-    <string name="macos_settings_title">Application DuckDuckGo pour Mac</string>
+    <string name="macos_settings_title">Navigateur DuckDuckGo pour Mac</string>
 
     <!-- Downloads -->
     <string name="downloadsMenuItem">Téléchargements</string>
@@ -715,7 +715,7 @@
     <string name="downloadsNotifyMeSubtitle">Recevez une notification lorsque les téléchargements sont terminés.</string>
 
     <!-- Windows Settings -->
-    <string name="windows_settings_title">Application DuckDuckGo pour Windows</string>
+    <string name="windows_settings_title">Navigateur DuckDuckGo pour Windows</string>
     <string name="windows_settings_description">Naviguez incognito avec notre application pour Windows</string>
     <string name="windows_settings_description_ready">Téléchargement disponible</string>
     <string name="windows_settings_description_list">Vous êtes sur la liste !</string>
@@ -836,7 +836,7 @@
         <item quantity="one"><![CDATA[ et <b>%1$d autre</b> essayaient de vous suivre ici. Je les ai bloqués !<br/><br/>☝️ Appuyez sur le bouclier pour en savoir plus.️]]></item>
         <item quantity="other"><![CDATA[ et <b>%1$d autres</b> essayaient de vous suivre ici. Je les ai bloqués !<br/><br/>☝️ Appuyez sur le bouclier pour en savoir plus.️]]></item>
     </plurals>
-    <plurals name="onboardingTrackersBlockedZeroDialogDescription" tools:ignore="ImpliedQuantity">
+    <plurals name="onboardingTrackersBlockedZeroDialogDescription">
         <item quantity="one"><![CDATA[ essayait de vous suivre ici. Je l\'ai bloqué !<br/><br/>☝️ Appuyez sur le bouclier pour en savoir plus.️]]></item>
         <item quantity="other"><![CDATA[ essayaient de vous suivre ici. Je les ai bloqués !<br/><br/>☝️ Appuyez sur le bouclier pour en savoir plus.️]]></item>
     </plurals>
