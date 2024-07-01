@@ -37,7 +37,10 @@ class RealRemoteMessageModel @Inject constructor(
     override fun getActiveMessages() = remoteMessagingRepository.messageFlow()
 
     override suspend fun onMessageShown(remoteMessage: RemoteMessage) {
-        remoteMessagingPixels.fireRemoteMessageShownPixel(remoteMessage)
+        withContext(dispatchers.io()) {
+            remoteMessagingPixels.fireRemoteMessageShownPixel(remoteMessage)
+            remoteMessagingRepository.markAsShown(remoteMessage)
+        }
     }
 
     override suspend fun onMessageDismissed(remoteMessage: RemoteMessage) {
