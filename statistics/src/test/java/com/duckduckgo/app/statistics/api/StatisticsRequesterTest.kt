@@ -17,6 +17,7 @@
 package com.duckduckgo.app.statistics.api
 
 import com.duckduckgo.app.statistics.model.Atb
+import com.duckduckgo.app.statistics.pixels.FeatureRetentionSegmentsPixelSender
 import com.duckduckgo.app.statistics.store.StatisticsDataStore
 import com.duckduckgo.autofill.api.email.EmailManager
 import com.duckduckgo.common.test.CoroutineTestRule
@@ -43,6 +44,7 @@ class StatisticsRequesterTest {
     private var mockResponseBody: ResponseBody = mock()
     private var mockVariantManager: VariantManager = mock()
     private val mockEmailManager: EmailManager = mock()
+    private val mockFeatureRetentionSegmentsPixelSender: FeatureRetentionSegmentsPixelSender = mock()
 
     private val plugins = object : PluginPoint<AtbLifecyclePlugin> {
         override fun getPlugins(): Collection<AtbLifecyclePlugin> {
@@ -64,6 +66,7 @@ class StatisticsRequesterTest {
         mockEmailManager,
         TestScope(),
         coroutineTestRule.testDispatcherProvider,
+        mockFeatureRetentionSegmentsPixelSender,
     )
 
     @Before

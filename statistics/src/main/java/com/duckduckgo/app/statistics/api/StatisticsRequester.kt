@@ -19,6 +19,9 @@ package com.duckduckgo.app.statistics.api
 import android.annotation.SuppressLint
 import com.duckduckgo.app.di.AppCoroutineScope
 import com.duckduckgo.app.statistics.model.Atb
+import com.duckduckgo.app.statistics.pixels.FeatureRetentionSegmentsPixelSender
+import com.duckduckgo.app.statistics.pixels.FeatureRetentionSegmentsPixelSender.Companion.PIXEL_VALUE_APP_USE
+import com.duckduckgo.app.statistics.pixels.FeatureRetentionSegmentsPixelSender.Companion.PIXEL_VALUE_SEARCH
 import com.duckduckgo.app.statistics.store.StatisticsDataStore
 import com.duckduckgo.autofill.api.email.EmailManager
 import com.duckduckgo.common.utils.DispatcherProvider
@@ -47,6 +50,7 @@ class StatisticsRequester @Inject constructor(
     private val emailManager: EmailManager,
     @AppCoroutineScope private val appCoroutineScope: CoroutineScope,
     private val dispatchers: DispatcherProvider,
+    private val featureRetentionSegmentsPixelSender: FeatureRetentionSegmentsPixelSender,
 ) : StatisticsUpdater {
 
     /**
@@ -55,15 +59,15 @@ class StatisticsRequester @Inject constructor(
      */
     @SuppressLint("CheckResult")
     override fun initializeAtb() {
-        Timber.i("Initializing ATB")
+        Timber.i("TAG_ANA 1 Initializing ATB")
 
         if (store.hasInstallationStatistics) {
-            Timber.v("Atb already initialized")
+            Timber.v("TAG_ANA 2 Atb already initialized")
 
             val storedAtb = store.atb
             if (storedAtb != null && storedAtbFormatNeedsCorrecting(storedAtb)) {
                 Timber.d(
-                    "Previous app version stored hardcoded `ma` variant in ATB param; we want to correct this behaviour",
+                    "TAG_ANA 3 Previous app version stored hardcoded `ma` variant in ATB param; we want to correct this behaviour",
                 )
                 store.atb = Atb(storedAtb.version.removeSuffix(LEGACY_ATB_FORMAT_SUFFIX))
                 store.variant = variantManager.defaultVariantKey()
@@ -78,21 +82,21 @@ class StatisticsRequester @Inject constructor(
             .subscribeOn(Schedulers.io())
             .flatMap {
                 val atb = Atb(it.version)
-                Timber.i("$atb")
+                Timber.i("TAG_ANA 4 service.atb atb is $atb")
                 store.saveAtb(atb)
                 val atbWithVariant = atb.formatWithVariant(variantManager.getVariantKey())
 
-                Timber.i("Initialized ATB: $atbWithVariant")
+                Timber.i("TAG_ANA 5 Initialized ATB: $atbWithVariant")
                 service.exti(atbWithVariant)
             }
             .subscribe(
                 {
-                    Timber.d("Atb initialization succeeded")
+                    Timber.d("TAG_ANA 6 Atb initialization succeeded")
                     plugins.getPlugins().forEach { it.onAppAtbInitialized() }
                 },
                 {
                     store.clearAtb()
-                    Timber.w("Atb initialization failed ${it.localizedMessage}")
+                    Timber.w("TAG_ANA 7 Atb initialization failed ${it.localizedMessage}")
                 },
             )
     }
@@ -102,6 +106,7 @@ class StatisticsRequester @Inject constructor(
 
     @SuppressLint("CheckResult")
     override fun refreshSearchRetentionAtb() {
+        Timber.d("TAG_ANA 8 Refreshing search retention ATB")
         val atb = store.atb
 
         if (atb == null) {
@@ -122,18 +127,26 @@ class StatisticsRequester @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     {
-                        Timber.v("Search atb refresh succeeded, latest atb is ${it.version}")
+                        Timber.v("TAG_ANA 9 Search atb refresh succeeded, latest atb is ${it.version}")
+                        if (store.searchRetentionAtb != it.version) {
+                            featureRetentionSegmentsPixelSender.fireRetentionSegmentsPixel(
+                                PIXEL_VALUE_SEARCH,
+                                store.searchRetentionAtb!!,
+                                it.version,
+                            )
+                        }
                         store.searchRetentionAtb = it.version
                         storeUpdateVersionIfPresent(it)
                         plugins.getPlugins().forEach { plugin -> plugin.onSearchRetentionAtbRefreshed() }
                     },
-                    { Timber.v("Search atb refresh failed with error ${it.localizedMessage}") },
+                    { Timber.v("TAG_ANA 10 Search atb refresh failed with error ${it.localizedMessage}") },
                 )
         }
     }
 
     @SuppressLint("CheckResult")
     override fun refreshAppRetentionAtb() {
+        Timber.d("TAG_ANA 11 App atb refresh started")
         val atb = store.atb
 
         if (atb == null) {
@@ -153,12 +166,19 @@ class StatisticsRequester @Inject constructor(
             .subscribeOn(Schedulers.io())
             .subscribe(
                 {
-                    Timber.v("App atb refresh succeeded, latest atb is ${it.version}")
+                    Timber.v("TAG_ANA 12 App atb refresh succeeded, latest atb is ${it.version}")
+                    if (store.appRetentionAtb != it.version) {
+                        featureRetentionSegmentsPixelSender.fireRetentionSegmentsPixel(
+                            PIXEL_VALUE_APP_USE,
+                            store.appRetentionAtb!!,
+                            it.version,
+                        )
+                    }
                     store.appRetentionAtb = it.version
                     storeUpdateVersionIfPresent(it)
                     plugins.getPlugins().forEach { plugin -> plugin.onAppRetentionAtbRefreshed() }
                 },
-                { Timber.v("App atb refresh failed with error ${it.localizedMessage}") },
+                { Timber.v("TAG_ANA 13 App atb refresh failed with error ${it.localizedMessage}") },
             )
     }
 
