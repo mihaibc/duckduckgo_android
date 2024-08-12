@@ -37,86 +37,77 @@ class SyncPromotionsImplTest {
     @Before
     fun setup() = runTest {
         configureAllTogglesEnabled()
+        configureUserHasEnabledSync(enabled = false)
         configureBookmarksPromoPreviouslyDismissed(previouslyDismissed = false)
         configurePasswordsPromoPreviouslyDismissed(previouslyDismissed = false)
     }
 
     @Test
     fun whenSomeBookmarksSavedThenCanShowPromo() = runTest {
-        assertTrue(testee.canShowBookmarksPromotion(savedBookmarks = 5, userIsSearching = false))
+        assertTrue(testee.canShowBookmarksPromotion(savedBookmarks = 5))
     }
 
     @Test
     fun whenNoBookmarksSavedThenCannotShowPromo() = runTest {
-        assertFalse(testee.canShowBookmarksPromotion(savedBookmarks = 0, userIsSearching = false))
+        assertFalse(testee.canShowBookmarksPromotion(savedBookmarks = 0))
     }
 
     @Test
     fun whenBookmarksPromoDismissedBeforeThenCannotShowPromo() = runTest {
         configureBookmarksPromoPreviouslyDismissed(previouslyDismissed = true)
-        assertFalse(testee.canShowBookmarksPromotion(savedBookmarks = 5, userIsSearching = false))
+        assertFalse(testee.canShowBookmarksPromotion(savedBookmarks = 5))
     }
 
     @Test
     fun whenPasswordsPromoDismissedBeforeThenCannotShowPromo() = runTest {
         configurePasswordsPromoPreviouslyDismissed(previouslyDismissed = true)
-        assertFalse(testee.canShowPasswordsPromotion(savedPasswords = 5, surveyShowing = false))
+        assertFalse(testee.canShowPasswordsPromotion(savedPasswords = 5))
     }
 
     @Test
     fun whenSomePasswordsSavedThenCanShowPromo() = runTest {
-        assertTrue(testee.canShowPasswordsPromotion(savedPasswords = 5, surveyShowing = false))
+        assertTrue(testee.canShowPasswordsPromotion(savedPasswords = 5))
     }
 
     @Test
     fun whenNoPasswordsSavedThenCannotShowPromo() = runTest {
-        assertFalse(testee.canShowPasswordsPromotion(savedPasswords = 0, surveyShowing = false))
-    }
-
-    @Test
-    fun whenSomePasswordsAndSurveyShowingThenCannotShowPromo() = runTest {
-        assertFalse(testee.canShowPasswordsPromotion(savedPasswords = 5, surveyShowing = true))
+        assertFalse(testee.canShowPasswordsPromotion(savedPasswords = 0))
     }
 
     @Test
     fun whenCouldShowPasswordPromoButTopLevelPromoFlagDisabledThenCannotShowPromo() = runTest {
         syncPromotionFeature.topLevelToggle.enabled = false
-        assertFalse(testee.canShowPasswordsPromotion(savedPasswords = 5, surveyShowing = false))
+        assertFalse(testee.canShowPasswordsPromotion(savedPasswords = 5))
     }
 
     @Test
     fun whenCouldShowPasswordPromoButSyncFlagDisabledThenCannotShowPromo() = runTest {
         configureSyncFeatureFlagState(state = false)
-        assertFalse(testee.canShowPasswordsPromotion(savedPasswords = 5, surveyShowing = false))
+        assertFalse(testee.canShowPasswordsPromotion(savedPasswords = 5))
     }
 
     @Test
     fun whenCouldShowBookmarkPromoButTopLevelPromoFlagDisabledThenCannotShowPromo() = runTest {
         syncPromotionFeature.topLevelToggle.enabled = false
-        assertFalse(testee.canShowBookmarksPromotion(savedBookmarks = 5, userIsSearching = false))
+        assertFalse(testee.canShowBookmarksPromotion(savedBookmarks = 5))
     }
 
     @Test
     fun whenCouldShowBookmarkPromoButSyncFlagDisabledThenCannotShowPromo() = runTest {
         configureSyncFeatureFlagState(state = false)
-        assertFalse(testee.canShowBookmarksPromotion(savedBookmarks = 5, userIsSearching = false))
+        assertFalse(testee.canShowBookmarksPromotion(savedBookmarks = 5))
     }
 
     @Test
     fun whenCouldShowPasswordPromoButAlreadySyncedThenCannotShowPromo() = runTest {
         configureUserHasEnabledSync(enabled = true)
-        assertFalse(testee.canShowPasswordsPromotion(savedPasswords = 5, surveyShowing = false))
+        assertFalse(testee.canShowPasswordsPromotion(savedPasswords = 5))
     }
 
     @Test
     fun whenCouldShowBookmarkPromoButAlreadySyncedThenCannotShowPromo() = runTest {
         configureUserHasEnabledSync(enabled = true)
-        assertFalse(testee.canShowBookmarksPromotion(savedBookmarks = 5, userIsSearching = false))
-    }
-
-    @Test
-    fun whenCouldShowBookmarkPromoButUserIsSearchingThenCannotShowPromo() = runTest {
-        assertFalse(testee.canShowBookmarksPromotion(savedBookmarks = 5, userIsSearching = true))
+        assertFalse(testee.canShowBookmarksPromotion(savedBookmarks = 5))
     }
 
     @Test

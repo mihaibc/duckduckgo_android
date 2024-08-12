@@ -22,6 +22,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.MenuProvider
 import androidx.core.view.updateLayoutParams
@@ -55,6 +56,7 @@ import com.duckduckgo.autofill.impl.ui.credential.management.AutofillSettingsVie
 import com.duckduckgo.autofill.impl.ui.credential.management.AutofillSettingsViewModel.ListModeCommand.LaunchImportPasswords
 import com.duckduckgo.autofill.impl.ui.credential.management.AutofillSettingsViewModel.ListModeCommand.LaunchReportAutofillBreakageConfirmation
 import com.duckduckgo.autofill.impl.ui.credential.management.AutofillSettingsViewModel.ListModeCommand.LaunchResetNeverSaveListConfirmation
+import com.duckduckgo.autofill.impl.ui.credential.management.AutofillSettingsViewModel.ListModeCommand.LaunchSyncSettings
 import com.duckduckgo.autofill.impl.ui.credential.management.AutofillSettingsViewModel.ListModeCommand.PromptUserToAuthenticateMassDeletion
 import com.duckduckgo.autofill.impl.ui.credential.management.AutofillSettingsViewModel.ListModeCommand.ShowUserReportSentMessage
 import com.duckduckgo.autofill.impl.ui.credential.management.importpassword.ImportPasswordActivityParams
@@ -74,7 +76,9 @@ import com.duckduckgo.common.utils.DispatcherProvider
 import com.duckduckgo.common.utils.FragmentViewModelFactory
 import com.duckduckgo.di.scopes.FragmentScope
 import com.duckduckgo.mobile.android.R as CommonR
+import com.duckduckgo.mobile.android.R as commonR
 import com.duckduckgo.navigation.api.GlobalActivityStarter
+import com.duckduckgo.sync.api.SyncActivityWithEmptyParams
 import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -121,6 +125,10 @@ class AutofillManagementListMode : DuckDuckGoFragment(R.layout.fragment_autofill
 
     val viewModel by lazy {
         ViewModelProvider(requireActivity(), viewModelFactory)[AutofillSettingsViewModel::class.java]
+    }
+
+    private val syncActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        viewModel.userReturnedFromSyncSettings()
     }
 
     private val binding: FragmentAutofillManagementListModeBinding by viewBinding()
@@ -274,6 +282,12 @@ class AutofillManagementListMode : DuckDuckGoFragment(R.layout.fragment_autofill
                     } else {
                         showSurvey(state.survey)
                     }
+
+                    if (state.showSyncPromo) {
+                        showSyncPromo()
+                    } else {
+                        hideSyncPromo()
+                    }
                 }
             }
         }
@@ -309,8 +323,16 @@ class AutofillManagementListMode : DuckDuckGoFragment(R.layout.fragment_autofill
             is LaunchImportPasswords -> launchImportPasswordsScreen()
             is LaunchReportAutofillBreakageConfirmation -> launchReportBreakageConfirmation(command.eTldPlusOne)
             is ShowUserReportSentMessage -> showUserReportSentMessage()
+            LaunchSyncSettings -> launchSyncSettings()
         }
         viewModel.commandProcessed(command)
+    }
+
+    private fun launchSyncSettings() {
+        context?.let {
+            val intent = globalActivityStarter.startIntent(it, SyncActivityWithEmptyParams)
+            syncActivityLauncher.launch(intent)
+        }
     }
 
     private fun showUserReportSentMessage() {
@@ -340,6 +362,34 @@ class AutofillManagementListMode : DuckDuckGoFragment(R.layout.fragment_autofill
             }
             show()
         }
+    }
+
+    private fun showSyncPromo() {
+        with(binding.syncPromotion) {
+            setMessage(
+                Message(
+                    topIllustration = commonR.drawable.ic_sync_start_96,
+                    title = getString(R.string.autofillManagementSyncPromoTitle),
+                    subtitle = getString(R.string.autofillManagementSyncPromoSubtitle),
+                    action = getString(R.string.autofillManagementSyncPromoPrimaryButton),
+                    action2 = getString(R.string.autofillManagementSyncPromoSecondaryButton),
+                ),
+            )
+            onPrimaryActionClicked {
+                viewModel.onUserSelectedSetUpSyncFromPromo()
+            }
+            onCloseButtonClicked {
+                viewModel.onUserCancelledSyncPromo()
+            }
+            onSecondaryActionClicked {
+                viewModel.onUserCancelledSyncPromo()
+            }
+            show()
+        }
+    }
+
+    private fun hideSyncPromo() {
+        binding.syncPromotion.gone()
     }
 
     private fun launchImportPasswordsScreen() {

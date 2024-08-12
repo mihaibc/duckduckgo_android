@@ -18,4 +18,9 @@
     <!-- New Tab -->
     <string name="newTabPageShortcutPasswords">Passwords</string>
 
-    </resources>
+    <string name="autofillManagementSyncPromoTitle">Sync Securely Between Devices</string>
+    <string name="autofillManagementSyncPromoSubtitle">No account needed. End-to-end encryption means nobody but you can see your passwords, not even us.</string>
+    <string name="autofillManagementSyncPromoPrimaryButton">Set Up Sync</string>
+    <string name="autofillManagementSyncPromoSecondaryButton">No Thanks</string>
+
+</resources>

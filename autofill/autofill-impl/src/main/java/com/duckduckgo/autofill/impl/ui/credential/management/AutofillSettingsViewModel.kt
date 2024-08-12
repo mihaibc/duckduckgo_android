@@ -95,6 +95,7 @@ import com.duckduckgo.common.utils.DispatcherProvider
 import com.duckduckgo.di.scopes.ActivityScope
 import com.duckduckgo.sync.api.engine.SyncEngine
 import com.duckduckgo.sync.api.engine.SyncEngine.SyncTrigger.FEATURE_READ
+import com.duckduckgo.sync.api.promotion.SyncPromotions
 import com.squareup.anvil.annotations.ContributesBinding
 import java.util.*
 import javax.inject.Inject
@@ -107,6 +108,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @ContributesViewModel(ActivityScope::class)
@@ -126,6 +128,7 @@ class AutofillSettingsViewModel @Inject constructor(
     private val neverSavedSiteRepository: NeverSavedSiteRepository,
     private val autofillSurvey: AutofillSurvey,
     private val urlMatcher: AutofillUrlMatcher,
+    private val syncPromotions: SyncPromotions,
     private val autofillBreakageReportSender: AutofillBreakageReportSender,
     private val autofillBreakageReportDataStore: AutofillSiteBreakageReportingDataStore,
     private val autofillBreakageReportCanShowRules: AutofillBreakageReportCanShowRules,
@@ -170,7 +173,10 @@ class AutofillSettingsViewModel @Inject constructor(
 
     fun onInitialiseListMode() {
         onShowListMode()
-        showSurveyIfAvailable()
+        viewModelScope.launch(dispatchers.io()) {
+            showSurveyIfAvailable()
+            showSyncPromotionIfEligible()
+        }
     }
 
     fun onReturnToListModeFromCredentialMode() {
@@ -278,14 +284,30 @@ class AutofillSettingsViewModel @Inject constructor(
         }
     }
 
-    private fun showSurveyIfAvailable() {
-        viewModelScope.launch(dispatchers.io()) {
+    private suspend fun showSurveyIfAvailable() {
+        withContext(dispatchers.io()) {
             val survey = autofillSurvey.firstUnusedSurvey()
             _viewState.value = _viewState.value.copy(survey = survey)
 
             if (survey != null) {
                 pixel.fire(AutofillPixelNames.AUTOFILL_SURVEY_AVAILABLE_PROMPT_DISPLAYED)
             }
+        }
+    }
+
+    private suspend fun showSyncPromotionIfEligible() {
+        withContext(dispatchers.io()) {
+            val numberSavedPasswords = autofillStore.getCredentialCount().first()
+            val surveyShowing = _viewState.value.survey != null
+            val userIsSearching = _viewState.value.credentialSearchQuery.isNotEmpty()
+
+            val showSyncPromo = when {
+                surveyShowing -> false
+                userIsSearching -> false
+                else -> syncPromotions.canShowPasswordsPromotion(savedPasswords = numberSavedPasswords)
+            }
+
+            _viewState.value = _viewState.value.copy(showSyncPromo = showSyncPromo)
         }
     }
 
@@ -430,6 +452,7 @@ class AutofillSettingsViewModel @Inject constructor(
                     logins = credentials,
                     reportBreakageState = updatedBreakageState,
                 )
+                showSyncPromotionIfEligible()
             }
         }
 
@@ -760,6 +783,23 @@ class AutofillSettingsViewModel @Inject constructor(
         pixel.fire(AUTOFILL_SITE_BREAKAGE_REPORT_CONFIRMATION_DISMISSED)
     }
 
+    fun onUserSelectedSetUpSyncFromPromo() {
+        addCommand(ListModeCommand.LaunchSyncSettings)
+    }
+
+    fun onUserCancelledSyncPromo() {
+        viewModelScope.launch(dispatchers.io()) {
+            syncPromotions.recordPasswordsPromotionDismissed()
+            showSyncPromotionIfEligible()
+        }
+    }
+
+    fun userReturnedFromSyncSettings() {
+        viewModelScope.launch(dispatchers.io()) {
+            showSyncPromotionIfEligible()
+        }
+    }
+
     data class ViewState(
         val autofillEnabled: Boolean = true,
         val showAutofillEnabledToggle: Boolean = true,
@@ -768,6 +808,7 @@ class AutofillSettingsViewModel @Inject constructor(
         val credentialSearchQuery: String = "",
         val reportBreakageState: ReportBreakageState = ReportBreakageState(),
         val survey: SurveyDetails? = null,
+        val showSyncPromo: Boolean = false,
     )
 
     data class ReportBreakageState(
@@ -846,6 +887,7 @@ class AutofillSettingsViewModel @Inject constructor(
         data object LaunchImportPasswords : ListModeCommand()
         data class LaunchReportAutofillBreakageConfirmation(val eTldPlusOne: String) : ListModeCommand()
         data object ShowUserReportSentMessage : ListModeCommand()
+        data object LaunchSyncSettings : ListModeCommand()
     }
 
     sealed class DuckAddressStatus {
