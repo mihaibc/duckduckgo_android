@@ -29,4 +29,21 @@
     <string name="userIdSectionHeader">User ID</string>
     <string name="deviceIdSectionHeader">Device Id</string>
     <string name="deviceNameSectionHeader">Device Name</string>
+
+    <string name="sync_get_apps_on_other_platforms">Get DuckDuckGo on Other Devices</string>
+    <string name="sync_get_apps_on_other_platforms_activity_title">Get DuckDuckGo</string>
+    <string name="sync_get_apps_on_other_platform_desktop_title">Get DuckDuckGo for Mac or Windows</string>
+    <string name="sync_get_apps_on_other_platform_desktop_subtitle">Share duckduckgo.com/browser</string>
+    <string name="sync_get_apps_on_other_platform_desktop_share_sheet_title">Get DuckDuckGo Browser for Mac or Windows</string>
+    <string name="sync_get_apps_on_other_platform_desktop_share_sheet_message" instruction="Placeholder is a URL">Search privately and block trackers with the DuckDuckGo desktop browser. Visit this link on your computer to download today.\n\n%1$s</string>
+
+    <string name="sync_get_apps_on_other_platform_ios_title">Get DuckDuckGo for iOS</string>
+    <string name="sync_get_apps_on_other_platform_ios_subtitle">Share App Store Link</string>
+    <string name="sync_get_apps_on_other_platform_ios_share_sheet_title">Get DuckDuckGo Browser for iOS</string>
+    <string name="sync_get_apps_on_other_platform_ios_share_sheet_message" instruction="Placeholder is a URL">Search privately and block trackers with the DuckDuckGo iOS browser. Visit this link on your iOS device to download today.\n\n%1$s</string>
+
+    <string name="sync_get_apps_on_other_platform_android_title">Get DuckDuckGo for Android</string>
+    <string name="sync_get_apps_on_other_platform_android_subtitle">Share Play Store Link</string>
+    <string name="sync_get_apps_on_other_platform_android_share_sheet_title">Get DuckDuckGo Browser for Android</string>
+    <string name="sync_get_apps_on_other_platform_android_share_sheet_message" instruction="Placeholder is a URL">Search privately and block trackers with the DuckDuckGo Android browser. Visit this link on your Android device to download today.\n\n%1$s</string>
 </resources>
