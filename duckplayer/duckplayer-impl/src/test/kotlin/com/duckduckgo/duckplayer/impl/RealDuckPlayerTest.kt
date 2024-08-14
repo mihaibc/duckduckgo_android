@@ -25,6 +25,7 @@ import android.webkit.WebView
 import androidx.core.net.toUri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.duckduckgo.app.statistics.pixels.Pixel
+import com.duckduckgo.app.statistics.pixels.Pixel.PixelType.COUNT
 import com.duckduckgo.common.utils.UrlScheme.Companion.duck
 import com.duckduckgo.common.utils.UrlScheme.Companion.https
 import com.duckduckgo.duckplayer.api.DuckPlayer.DuckPlayerState.DISABLED
@@ -34,6 +35,7 @@ import com.duckduckgo.duckplayer.api.DuckPlayer.UserPreferences
 import com.duckduckgo.duckplayer.api.PrivatePlayerMode.AlwaysAsk
 import com.duckduckgo.duckplayer.api.PrivatePlayerMode.Disabled
 import com.duckduckgo.duckplayer.api.PrivatePlayerMode.Enabled
+import com.duckduckgo.duckplayer.impl.DuckPlayerPixelNames.DUCK_PLAYER_OVERLAY_YOUTUBE_IMPRESSIONS
 import com.duckduckgo.feature.toggles.api.Toggle
 import com.duckduckgo.feature.toggles.api.Toggle.State
 import kotlinx.coroutines.flow.first
@@ -224,21 +226,21 @@ class RealDuckPlayerTest {
 
     @Test
     fun sendDuckPlayerPixel_firesPixelWithCorrectNameAndData() = runTest {
-        val pixelName = "pixelName"
+        val pixelName = "overlay"
         val pixelData = mapOf("key" to "value")
 
         testee.sendDuckPlayerPixel(pixelName, pixelData)
 
-        verify(mockPixel).fire("m_pixelName", pixelData)
+        verify(mockPixel).fire(DUCK_PLAYER_OVERLAY_YOUTUBE_IMPRESSIONS, pixelData, emptyMap(), COUNT)
     }
 
     @Test
     fun sendDuckPlayerPixel_firesPixelWithEmptyDataWhenNoDataProvided() = runTest {
-        val pixelName = "pixelName"
+        val pixelName = "overlay"
 
         testee.sendDuckPlayerPixel(pixelName, emptyMap())
 
-        verify(mockPixel).fire("m_pixelName", emptyMap())
+        verify(mockPixel).fire(DUCK_PLAYER_OVERLAY_YOUTUBE_IMPRESSIONS, emptyMap(), emptyMap(), COUNT)
     }
 
     // endregion
@@ -551,7 +553,7 @@ class RealDuckPlayerTest {
 
         val result = testee.intercept(request, url, webView)
 
-        verify(webView).loadUrl("duck://player/12345")
+        verify(webView).loadUrl("duck://player/12345?origin=auto")
         assertNotNull(result)
     }
 
