@@ -19,6 +19,7 @@ package com.duckduckgo.app.cta.ui
 import android.content.Context
 import android.net.Uri
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
@@ -49,7 +50,10 @@ import com.duckduckgo.common.utils.baseHost
 import com.duckduckgo.common.utils.extensions.html
 
 interface ViewCta {
-    fun showCta(view: View, onTypingAnimationFinished: () -> Unit)
+    fun showCta(
+        view: View,
+        onTypingAnimationFinished: () -> Unit,
+    )
 }
 
 interface DaxCta {
@@ -449,7 +453,10 @@ sealed class DaxBubbleCta(
 
     private var ctaView: View? = null
 
-    override fun showCta(view: View, onTypingAnimationFinished: () -> Unit) {
+    override fun showCta(
+        view: View,
+        onTypingAnimationFinished: () -> Unit,
+    ) {
         ctaView = view
         val daxTitle = view.context.getString(title)
         val daxText = view.context.getString(description)
@@ -574,6 +581,100 @@ sealed class DaxBubbleCta(
     }
 }
 
+sealed class ExperimentDaxBubbleCta(
+    override val ctaId: CtaId,
+    @StringRes open val title: Int,
+    @StringRes open val description: Int,
+    @StringRes open val primaryCta: Int?,
+    @StringRes open val secondaryCta: Int?,
+    @DrawableRes open val placeholder: Int?,
+    override val shownPixel: Pixel.PixelName?,
+    override val okPixel: Pixel.PixelName?,
+    override val cancelPixel: Pixel.PixelName?,
+    override var ctaPixelParam: String,
+    override val onboardingStore: OnboardingStore,
+    override val appInstallStore: AppInstallStore,
+) : Cta, ViewCta, DaxCta {
+
+    private var ctaView: View? = null
+
+    override fun showCta(
+        view: View,
+        onTypingAnimationFinished: () -> Unit,
+    ) {
+        ctaView = view
+        val daxTitle = view.context.getString(title)
+        val daxText = view.context.getString(description)
+
+        view.findViewById<DaxButton>(R.id.daxDialogOption1).gone()
+        view.findViewById<DaxButton>(R.id.daxDialogOption2).gone()
+        view.findViewById<DaxButton>(R.id.daxDialogOption3).gone()
+        view.findViewById<DaxButton>(R.id.daxDialogOption4).gone()
+
+        primaryCta?.let {
+            view.findViewById<DaxButton>(R.id.primaryCta).show()
+            view.findViewById<DaxButton>(R.id.primaryCta).text = view.context.getString(it)
+        } ?: view.findViewById<DaxButton>(R.id.primaryCta).gone()
+
+        secondaryCta?.let {
+            view.findViewById<DaxButton>(R.id.secondaryCta).show()
+            view.findViewById<DaxButton>(R.id.secondaryCta).text = view.context.getString(it)
+        } ?: view.findViewById<DaxButton>(R.id.secondaryCta).gone()
+
+        placeholder?.let {
+            view.findViewById<DaxButton>(R.id.placeholder).show()
+            view.findViewById<ImageView>(R.id.placeholder).setImageResource(it)
+        } ?: view.findViewById<DaxButton>(R.id.placeholder).gone()
+
+        view.show()
+        view.findViewById<TypeAnimationTextView>(R.id.dialogTextCta).text = ""
+        view.findViewById<DaxTextView>(R.id.hiddenTextCta).text = daxText.html(view.context)
+        view.findViewById<DaxTextView>(R.id.daxBubbleDialogTitle).apply {
+            alpha = 0f
+            text = daxTitle.html(view.context)
+        }
+        view.animate().alpha(1f).setDuration(500).setStartDelay(600)
+            .withEndAction {
+                ViewCompat.animate(view.findViewById<DaxTextView>(R.id.daxBubbleDialogTitle)).alpha(1f).setDuration(500)
+                    .withEndAction {
+                        view.findViewById<TypeAnimationTextView>(R.id.dialogTextCta).startTypingAnimation(daxText, true) {
+                            onTypingAnimationFinished()
+                        }
+                    }
+            }
+    }
+
+    fun setOnPrimaryCtaClicked(onButtonClicked: () -> Unit) {
+        ctaView?.findViewById<DaxButtonPrimary>(R.id.primaryCta)?.setOnClickListener {
+            onButtonClicked.invoke()
+        }
+    }
+
+    override fun pixelCancelParameters(): Map<String, String> = mapOf(Pixel.PixelParameter.CTA_SHOWN to ctaPixelParam)
+
+    override fun pixelOkParameters(): Map<String, String> = mapOf(Pixel.PixelParameter.CTA_SHOWN to ctaPixelParam)
+
+    override fun pixelShownParameters(): Map<String, String> = mapOf(Pixel.PixelParameter.CTA_SHOWN to addCtaToHistory(ctaPixelParam))
+
+    data class DaxPrivacyProCta(
+        override val onboardingStore: OnboardingStore,
+        override val appInstallStore: AppInstallStore,
+    ) : ExperimentDaxBubbleCta(
+        CtaId.DAX_INTRO_PRIVACY_PRO,
+        R.string.onboardingPrivacyProDaxDialogTitle,
+        R.string.onboardingPrivacyProDaxDialogDescription,
+        R.string.onboardingPrivacyProDaxDialogOkButton,
+        R.string.onboardingPrivacyProDaxDialogCancelButton,
+        com.duckduckgo.mobile.android.R.drawable.ic_privacy_pro_128,
+        AppPixelName.ONBOARDING_DAX_CTA_SHOWN,
+        AppPixelName.ONBOARDING_DAX_CTA_OK_BUTTON,
+        AppPixelName.ONBOARDING_DAX_CTA_CANCEL_BUTTON,
+        Pixel.PixelValues.DAX_PRIVACY_PRO,
+        onboardingStore,
+        appInstallStore,
+    )
+}
+
 sealed class HomePanelCta(
     override val ctaId: CtaId,
     @DrawableRes open val image: Int,
@@ -586,7 +687,10 @@ sealed class HomePanelCta(
     override val cancelPixel: Pixel.PixelName?,
 ) : Cta, ViewCta {
 
-    override fun showCta(view: View, onTypingAnimationFinished: () -> Unit) {
+    override fun showCta(
+        view: View,
+        onTypingAnimationFinished: () -> Unit,
+    ) {
         // no-op. We are now using a Bottom Sheet to display this
         // but we want to keep the same classes for pixels, etc
     }

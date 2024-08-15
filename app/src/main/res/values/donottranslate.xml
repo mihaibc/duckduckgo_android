@@ -57,4 +57,10 @@
     <!-- New Tab -->
     <string name="newTabPageShortcutDownloads">Downloads</string>
     <string name="newTabPageShortcutSettings">Settings</string>
+
+    <!-- Experiment Privacy Pro onboarding -->
+    <string name="onboardingPrivacyProDaxDialogTitle">Oh, before I forget…</string>
+    <string name="onboardingPrivacyProDaxDialogDescription"><![CDATA[DuckDuckGo also has a built-in <b>VPN</b>!<br/><br/>Activate it with a <b>paid Privacy Pro subscription.</b>]]></string>
+    <string name="onboardingPrivacyProDaxDialogOkButton">Learn More</string>
+    <string name="onboardingPrivacyProDaxDialogCancelButton">Skip</string>
 </resources>

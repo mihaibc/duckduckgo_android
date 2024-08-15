@@ -3946,6 +3946,7 @@ class BrowserTabFragment :
             when (configuration) {
                 is HomePanelCta -> showHomeCta(configuration)
                 is DaxBubbleCta -> showDaxOnboardingBubbleCta(configuration)
+                is ExperimentDaxBubbleCta -> showExperimentOnboardingBubbleCta(configuration)
                 is OnboardingDaxDialogCta -> showOnboardingDialogCta(configuration)
             }
         }
@@ -3956,6 +3957,23 @@ class BrowserTabFragment :
                 showCta(daxDialogIntroBubbleCta.daxCtaContainer) {
                     setOnOptionClicked { userEnteredQuery(it.link) }
                 }
+            }
+            newBrowserTab.newTabLayout.setOnClickListener { daxDialogIntroBubbleCta.dialogTextCta.finishAnimation() }
+
+            if (appTheme.isLightModeEnabled()) {
+                newBrowserTab.browserBackground.setBackgroundResource(R.drawable.onboarding_experiment_background_bitmap_light)
+            } else {
+                newBrowserTab.browserBackground.setBackgroundResource(R.drawable.onboarding_experiment_background_bitmap_dark)
+            }
+
+            viewModel.onCtaShown()
+        }
+
+        private fun showExperimentOnboardingBubbleCta(configuration: ExperimentDaxBubbleCta) {
+            hideNewTab()
+            configuration.showCta(daxDialogIntroBubbleCta.daxCtaContainer, {})
+            configuration.setOnPrimaryCtaClicked {
+                Toast.makeText(context, "Go to privacy pro settings", Toast.LENGTH_SHORT).show()
             }
             newBrowserTab.newTabLayout.setOnClickListener { daxDialogIntroBubbleCta.dialogTextCta.finishAnimation() }
 
