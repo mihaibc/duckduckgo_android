@@ -188,13 +188,13 @@ class CtaViewModel @Inject constructor(
                 DaxBubbleCta.DaxIntroVisitSiteOptionsCta(onboardingStore, appInstallStore)
             }
 
+            canShowDaxCtaEndOfJourney() && !extendedOnboardingFeatureToggles.noBrowserCtas().isEnabled() -> {
+                DaxBubbleCta.DaxEndCta(onboardingStore, appInstallStore)
+            }
+
             // canShowPrivacyProCta() && !extendedOnboardingFeatureToggles.privacyProCta().isEnabled() -> {
             true -> {
                 ExperimentDaxBubbleCta.DaxPrivacyProCta(onboardingStore, appInstallStore)
-            }
-
-            canShowDaxCtaEndOfJourney() && !extendedOnboardingFeatureToggles.noBrowserCtas().isEnabled() -> {
-                DaxBubbleCta.DaxEndCta(onboardingStore, appInstallStore)
             }
 
             canShowWidgetCta() -> {

@@ -650,6 +650,12 @@ sealed class ExperimentDaxBubbleCta(
         }
     }
 
+    fun setOnSecondaryCtaClicked(onButtonClicked: () -> Unit) {
+        ctaView?.findViewById<DaxButton>(R.id.secondaryCta)?.setOnClickListener {
+            onButtonClicked.invoke()
+        }
+    }
+
     override fun pixelCancelParameters(): Map<String, String> = mapOf(Pixel.PixelParameter.CTA_SHOWN to ctaPixelParam)
 
     override fun pixelOkParameters(): Map<String, String> = mapOf(Pixel.PixelParameter.CTA_SHOWN to ctaPixelParam)

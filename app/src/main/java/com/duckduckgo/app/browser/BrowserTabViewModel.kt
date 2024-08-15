@@ -2554,6 +2554,9 @@ class BrowserTabViewModel @Inject constructor(
     fun onUserClickCtaSecondaryButton(cta: Cta) {
         viewModelScope.launch {
             ctaViewModel.onUserDismissedCta(cta)
+            if (cta is ExperimentDaxBubbleCta) {
+                ctaViewState.value = currentCtaViewState().copy(cta = null)
+            }
         }
     }
 
