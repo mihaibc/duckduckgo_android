@@ -124,7 +124,8 @@ class CtaViewModelTest {
     private lateinit var testee: CtaViewModel
 
     val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-    val mockEnabledToggle: Toggle = mock { on { it.isEnabled() } doReturn true }
+    private val mockEnabledToggle: Toggle = mock { on { it.isEnabled() } doReturn true }
+    private val mockDisabledToggle: Toggle = mock { on { it.isEnabled() } doReturn false }
 
     @Before
     fun before() {
@@ -135,6 +136,7 @@ class CtaViewModelTest {
 
         val mockDisabledToggle: Toggle = mock { on { it.isEnabled() } doReturn false }
         whenever(mockExtendedOnboardingFeatureToggles.noBrowserCtas()).thenReturn(mockDisabledToggle)
+        whenever(mockExtendedOnboardingFeatureToggles.privacyProCta()).thenReturn(mockDisabledToggle)
         whenever(mockAppInstallStore.installTimestamp).thenReturn(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1))
         whenever(mockUserAllowListRepository.isDomainInUserAllowList(any())).thenReturn(false)
         whenever(mockDismissedCtaDao.dismissedCtas()).thenReturn(db.dismissedCtaDao().dismissedCtas())
@@ -692,17 +694,6 @@ class CtaViewModelTest {
     }
 
     @Test
-    fun givenNoBrowserCtasExperimentWhenRefreshCtaOnHomeTabAndIntroShownThenReturnWidgetCta() = runTest {
-        givenDaxOnboardingActive()
-        whenever(mockExtendedOnboardingFeatureToggles.noBrowserCtas()).thenReturn(mockEnabledToggle)
-        whenever(mockDismissedCtaDao.exists(CtaId.DAX_INTRO)).thenReturn(true)
-        whenever(mockWidgetCapabilities.supportsAutomaticWidgetAdd).thenReturn(true)
-
-        val value = testee.refreshCta(coroutineRule.testDispatcher, isBrowserShowing = false)
-        assertTrue(value is HomePanelCta.AddWidgetAuto)
-    }
-
-    @Test
     fun givenNoBrowserCtasExperimentWhenRefreshCtaWhileBrowsingThenReturnNull() = runTest {
         givenDaxOnboardingActive()
         whenever(mockExtendedOnboardingFeatureToggles.noBrowserCtas()).thenReturn(mockEnabledToggle)
@@ -710,6 +701,32 @@ class CtaViewModelTest {
 
         val value = testee.refreshCta(coroutineRule.testDispatcher, isBrowserShowing = true, site = site)
         assertNull(value)
+    }
+
+    @Test
+    fun givenPrivacyProCtaExperimentWhenRefreshCtaOnHomeTabThenReturnPrivacyProCta() = runTest {
+        givenDaxOnboardingActive()
+        whenever(mockExtendedOnboardingFeatureToggles.noBrowserCtas()).thenReturn(mockEnabledToggle)
+        whenever(mockDismissedCtaDao.exists(CtaId.DAX_INTRO)).thenReturn(true)
+        whenever(mockDismissedCtaDao.exists(CtaId.DAX_INTRO_VISIT_SITE)).thenReturn(true)
+        whenever(mockDismissedCtaDao.exists(CtaId.DAX_END)).thenReturn(true)
+        whenever(mockWidgetCapabilities.supportsAutomaticWidgetAdd).thenReturn(true)
+
+        val value = testee.refreshCta(coroutineRule.testDispatcher, isBrowserShowing = false)
+        assertTrue(value is ExperimentDaxBubbleCta.DaxPrivacyProCta)
+    }
+
+    @Test
+    fun givenPrivacyProCtaExperimentDisabledWhenRefreshCtaOnHomeTabThenDontReturnPrivacyProCta() = runTest {
+        givenDaxOnboardingActive()
+        whenever(mockExtendedOnboardingFeatureToggles.noBrowserCtas()).thenReturn(mockDisabledToggle)
+        whenever(mockDismissedCtaDao.exists(CtaId.DAX_INTRO)).thenReturn(true)
+        whenever(mockDismissedCtaDao.exists(CtaId.DAX_INTRO_VISIT_SITE)).thenReturn(true)
+        whenever(mockDismissedCtaDao.exists(CtaId.DAX_END)).thenReturn(true)
+        whenever(mockWidgetCapabilities.supportsAutomaticWidgetAdd).thenReturn(true)
+
+        val value = testee.refreshCta(coroutineRule.testDispatcher, isBrowserShowing = false)
+        assertFalse(value is ExperimentDaxBubbleCta.DaxPrivacyProCta)
     }
 
     private suspend fun givenDaxOnboardingActive() {

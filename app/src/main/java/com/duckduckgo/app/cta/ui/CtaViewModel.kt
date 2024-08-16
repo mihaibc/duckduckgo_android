@@ -190,8 +190,7 @@ class CtaViewModel @Inject constructor(
                 DaxBubbleCta.DaxEndCta(onboardingStore, appInstallStore)
             }
 
-            // canShowPrivacyProCta() && !extendedOnboardingFeatureToggles.privacyProCta().isEnabled() -> {
-            true -> {
+            canShowPrivacyProCta() && !extendedOnboardingFeatureToggles.privacyProCta().isEnabled() -> {
                 ExperimentDaxBubbleCta.DaxPrivacyProCta(onboardingStore, appInstallStore)
             }
 
@@ -233,6 +232,10 @@ class CtaViewModel @Inject constructor(
             }
             else -> true
         }
+    }
+
+    private suspend fun canShowPrivacyProCta(): Boolean {
+        return daxOnboardingActive() && !hideTips() && !daxDialogPrivacyProShown()
     }
 
     @WorkerThread
@@ -309,6 +312,8 @@ class CtaViewModel @Inject constructor(
     private fun daxDialogFireEducationShown(): Boolean = dismissedCtaDao.exists(CtaId.DAX_FIRE_BUTTON)
 
     private fun daxDialogEndShown(): Boolean = dismissedCtaDao.exists(CtaId.DAX_END)
+
+    private fun daxDialogPrivacyProShown(): Boolean = dismissedCtaDao.exists(CtaId.DAX_INTRO_PRIVACY_PRO)
 
     private fun pulseFireButtonShown(): Boolean = dismissedCtaDao.exists(CtaId.DAX_FIRE_BUTTON_PULSE)
 
