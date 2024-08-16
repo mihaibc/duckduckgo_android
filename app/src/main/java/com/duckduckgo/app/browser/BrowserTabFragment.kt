@@ -3973,7 +3973,8 @@ class BrowserTabFragment :
             hideNewTab()
             configuration.showCta(daxDialogIntroBubbleCta.daxCtaContainer) {}
             configuration.setOnPrimaryCtaClicked {
-                Toast.makeText(context, "Go to privacy pro settings", Toast.LENGTH_SHORT).show()
+                viewModel.onUserClickCtaOkButton(configuration)
+                daxDialogIntroBubbleCta.root.gone()
             }
             configuration.setOnSecondaryCtaClicked {
                 viewModel.onUserClickCtaSecondaryButton(configuration)

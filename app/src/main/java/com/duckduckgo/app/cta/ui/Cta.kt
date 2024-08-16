@@ -42,7 +42,6 @@ import com.duckduckgo.app.statistics.pixels.Pixel.PixelValues.DAX_FIRE_DIALOG_CT
 import com.duckduckgo.app.trackerdetection.model.Entity
 import com.duckduckgo.common.ui.view.TypeAnimationTextView
 import com.duckduckgo.common.ui.view.button.DaxButton
-import com.duckduckgo.common.ui.view.button.DaxButtonPrimary
 import com.duckduckgo.common.ui.view.gone
 import com.duckduckgo.common.ui.view.show
 import com.duckduckgo.common.ui.view.text.DaxTextView
@@ -507,12 +506,6 @@ sealed class DaxBubbleCta(
         }
     }
 
-    fun setOnPrimaryCtaClicked(onButtonClicked: () -> Unit) {
-        ctaView?.findViewById<DaxButtonPrimary>(R.id.primaryCta)?.setOnClickListener {
-            onButtonClicked.invoke()
-        }
-    }
-
     override fun pixelCancelParameters(): Map<String, String> = mapOf(Pixel.PixelParameter.CTA_SHOWN to ctaPixelParam)
 
     override fun pixelOkParameters(): Map<String, String> = mapOf(Pixel.PixelParameter.CTA_SHOWN to ctaPixelParam)
@@ -613,18 +606,21 @@ sealed class ExperimentDaxBubbleCta(
 
         primaryCta?.let {
             view.findViewById<DaxButton>(R.id.primaryCta).show()
+            view.findViewById<DaxButton>(R.id.primaryCta).alpha = 0f
             view.findViewById<DaxButton>(R.id.primaryCta).text = view.context.getString(it)
         } ?: view.findViewById<DaxButton>(R.id.primaryCta).gone()
 
         secondaryCta?.let {
             view.findViewById<DaxButton>(R.id.secondaryCta).show()
+            view.findViewById<DaxButton>(R.id.secondaryCta).alpha = 0f
             view.findViewById<DaxButton>(R.id.secondaryCta).text = view.context.getString(it)
         } ?: view.findViewById<DaxButton>(R.id.secondaryCta).gone()
 
         placeholder?.let {
-            view.findViewById<DaxButton>(R.id.placeholder).show()
+            view.findViewById<ImageView>(R.id.placeholder).show()
+            view.findViewById<ImageView>(R.id.placeholder).alpha = 0f
             view.findViewById<ImageView>(R.id.placeholder).setImageResource(it)
-        } ?: view.findViewById<DaxButton>(R.id.placeholder).gone()
+        } ?: view.findViewById<ImageView>(R.id.placeholder).gone()
 
         view.show()
         view.findViewById<TypeAnimationTextView>(R.id.dialogTextCta).text = ""
@@ -638,6 +634,9 @@ sealed class ExperimentDaxBubbleCta(
                 ViewCompat.animate(view.findViewById<DaxTextView>(R.id.daxBubbleDialogTitle)).alpha(1f).setDuration(500)
                     .withEndAction {
                         view.findViewById<TypeAnimationTextView>(R.id.dialogTextCta).startTypingAnimation(daxText, true) {
+                            view.findViewById<ImageView>(R.id.placeholder).animate().alpha(1f).setDuration(500)
+                            view.findViewById<DaxButton>(R.id.primaryCta).animate().alpha(1f).setDuration(500)
+                            view.findViewById<DaxButton>(R.id.secondaryCta).animate().alpha(1f).setDuration(500)
                             onTypingAnimationFinished()
                         }
                     }
@@ -645,7 +644,7 @@ sealed class ExperimentDaxBubbleCta(
     }
 
     fun setOnPrimaryCtaClicked(onButtonClicked: () -> Unit) {
-        ctaView?.findViewById<DaxButtonPrimary>(R.id.primaryCta)?.setOnClickListener {
+        ctaView?.findViewById<DaxButton>(R.id.primaryCta)?.setOnClickListener {
             onButtonClicked.invoke()
         }
     }
